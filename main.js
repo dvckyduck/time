@@ -110,14 +110,34 @@ async function fetchAuthorityTime(){
 }
 
 function formatOffset(deltaMs){
+  // produce compact signed string, omitting leading zero segments
   const sign = deltaMs >= 0 ? '+' : '-';
-  const absMs = Math.abs(deltaMs);
-  const secs = Math.floor((absMs/1000)%60);
-  const mins = Math.floor((absMs/1000/60)%60);
-  const hrs = Math.floor(absMs/1000/3600);
-  if (hrs>0) return `${sign}${hrs}h ${mins}m ${secs}s`;
-  if (mins>0) return `${sign}${mins}m ${secs}s`;
-  return `${sign}${secs}s`;
+  const abs = Math.abs(deltaMs);
+  const ms = abs % 1000;
+  const totalSec = Math.floor(abs / 1000);
+  const secs = totalSec % 60;
+  const totalMin = Math.floor(totalSec / 60);
+  const mins = totalMin % 60;
+  const hrs = Math.floor(totalMin / 60);
+
+  // build parts, omit leading zero groups unless a lower unit exists
+  const parts = [];
+  if (hrs > 0) parts.push(String(hrs));            // hours always shown if >0
+  if (mins > 0 || hrs > 0) parts.push(String(mins).padStart(2,'0')); // show minutes if hrs present or mins >0
+  // seconds: show if any higher shown or secs>0 or ms>0
+  const showSeconds = hrs>0 || mins>0 || secs>0 || ms>0;
+  if (showSeconds) {
+    const secStr = (hrs>0 || mins>0) ? String(secs).padStart(2,'0') : String(secs);
+    // append milliseconds if present
+    const msStr = ms > 0 ? `.${String(ms).padStart(3,'0')}` : '';
+    parts.push(secStr + msStr);
+  }
+
+  // if all zero, show "0s"
+  const body = parts.length ? parts.join(':') : '0s';
+  // append unit for pure seconds/milliseconds when no ":" present
+  const final = body.includes(':') ? body : `${body}${body.endsWith('s') ? '' : 's'}`;
+  return `${sign}${final}`;
 }
 
 async function updateOffsetStatus(){
@@ -131,16 +151,16 @@ async function updateOffsetStatus(){
   }
   const localNow = new Date();
   const delta = localNow - serverTime; // positive => local ahead
-  const formatted = formatOffset(delta);
+  const exact = formatOffset(delta);
   let label = '';
   if (Math.abs(delta) < 2000) { // <2s
-    label = `In sync (${formatted})`;
+    label = `In sync (${exact})`;
     offsetEl.classList.add('ok');
   } else if (Math.abs(delta) < 60000) { // <1min
-    label = `Slightly ${delta>0? 'ahead':'behind'} (${formatted})`;
+    label = `Slightly ${delta>0? 'ahead':'behind'} (${exact})`;
     offsetEl.classList.add('warn');
   } else {
-    label = `${delta>0? 'Your clock is ahead':'Your clock is behind'} (${formatted})`;
+    label = `${delta>0? 'Your clock is ahead':'Your clock is behind'} (${exact})`;
     offsetEl.classList.add('bad');
   }
   offsetEl.textContent = label;
