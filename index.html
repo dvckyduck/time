@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Local Time</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Import map (reserved for future libs) -->
+  <script type="importmap">
+  {
+    "imports": {}
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark">
+  <!-- ...existing content... -->
+  <main class="app">
+    <section class="clock-card" aria-live="polite">
+      <div class="clock-outline">
+        <div id="time" class="time">--:--:--</div>
+        <div id="ampm" class="ampm">UTC</div>
+      </div>
+
+      <div class="meta">
+        <div id="tz" class="tz">Timezone: —</div>
+        <button id="toggle" class="btn" aria-pressed="false" title="Toggle light / dark">
+          Light
+        </button>
+      </div>
+
+      <div class="offset-row">
+        <div id="offset" class="offset">Sync: checking…</div>
+      </div>
+
+      <p class="credits">Credits to <a href="https://discordapp.com/" target="_blank" rel="noopener noreferrer">@qpge on discord (DVCKY)</a></p>
+    </section>
+  </main>
+  <!-- ...existing content... -->
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

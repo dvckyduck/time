@@ -1,0 +1,194 @@
+:root{
+  --bg-dark:#0b0b0c;
+  --panel-dark:#0f1113;
+  --muted:#9aa0a6;
+  --accent-start:#00d4ff;
+  --accent-end:#6dd3a7;
+  --glass: rgba(255,255,255,0.04);
+  --outline: rgba(255,255,255,0.06);
+  --shadow: 0 6px 30px rgba(2,6,23,0.6);
+  --radius:14px;
+  --mono: "Space Mono", monospace;
+  --ui: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+body{
+  margin:0;
+  font-family:var(--ui);
+  background: linear-gradient(180deg, var(--bg-dark) 0%, #060607 100%);
+  color: #e7e9eb;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ...existing styles... */
+.app{
+  width:100%;
+  max-width:520px;
+  padding:28px;
+  box-sizing:border-box;
+}
+
+.clock-card{
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  border-radius:var(--radius);
+  padding:36px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--outline);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  align-items:center;
+  text-align:center;
+}
+
+/* outline ring */
+.clock-outline{
+  padding:28px;
+  border-radius:12px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  position:relative;
+  min-width:260px;
+  min-height:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+.clock-outline::before{
+  content:'';
+  position:absolute;
+  inset: -2px;
+  border-radius:14px;
+  padding:2px;
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events:none;
+  opacity:0.95;
+}
+
+/* Time */
+.time{
+  font-family: var(--mono);
+  font-size:56px;
+  letter-spacing:2px;
+  line-height:1;
+  font-weight:700;
+  background: linear-gradient(90deg, #fff, rgba(255,255,255,0.75));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow: 0 6px 28px rgba(0,0,0,0.6);
+  transform-origin:center;
+  animation: pulse 6s ease-in-out infinite;
+}
+
+/* AM/PM */
+.ampm{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:600;
+  letter-spacing:0.6px;
+}
+
+/* meta row */
+.meta{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  justify-content:space-between;
+}
+.tz{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* button */
+.btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.06);
+  color:var(--muted);
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition: all 200ms ease;
+  backdrop-filter: blur(6px);
+}
+.btn:hover{
+  transform:translateY(-2px);
+  color:#fff;
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* credits */
+.credits{
+  margin:6px 0 0 0;
+  font-size:12px;
+  color:var(--muted);
+}
+.credits a{
+  color:inherit;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+
+.offset-row{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin-top:4px;
+}
+.offset{
+  font-size:13px;
+  color:var(--muted);
+  background: transparent;
+  padding:6px 10px;
+  border-radius:10px;
+}
+/* small status colors */
+.offset.ok{ color: #7ee787; }      /* roughly green */
+.offset.warn{ color: #ffd16b; }    /* yellow */
+.offset.bad{ color: #ff8a8a; }     /* red */
+
+/* animations */
+@keyframes pulse{
+  0%,100%{ transform: scale(1); filter: drop-shadow(0 6px 28px rgba(0,0,0,0.6)); }
+  50%{ transform: scale(1.02); filter: drop-shadow(0 10px 40px rgba(0,0,0,0.65)); }
+}
+
+/* Light theme overrides */
+body.theme-light{
+  --bg-dark:#f6f7f8;
+  --panel-dark:#ffffff;
+  --muted:#55626a;
+  --glass: rgba(0,0,0,0.04);
+  --outline: rgba(0,0,0,0.06);
+  color:#0b0b0c;
+  background: linear-gradient(180deg, #f8fafb 0%, #eef2f4 100%);
+}
+body.theme-light .clock-card{
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00));
+  box-shadow: 0 8px 30px rgba(18,24,33,0.06);
+}
+body.theme-light .time{
+  background: linear-gradient(90deg, #0b0b0c, rgba(0,0,0,0.8));
+}
+body.theme-light .btn{ color:var(--muted); border-color: rgba(11,11,12,0.06); }
+
+/* responsive */
+@media (max-width:420px){
+  .time{ font-size:44px; }
+  .clock-outline{ padding:18px; min-width:220px; min-height:100px; }
+  .clock-card{ padding:20px; }
+}
